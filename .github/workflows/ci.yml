@@ -1,15 +1,14 @@
 name: "build"
 
 on:
-  workflow_dispatch
-  #push:
-  #  branches: [ master ]
-  #pull_request:
-  #  branches: [ master ]
-  #schedule:
-  #  # Run daily at midnight to ensure we catch regressions.
-  #  # https://crontab.guru/#0_0_*_*_*
-  #  - cron: "0 0 * * *"
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    # Run daily at midnight to ensure we catch regressions.
+    # https://crontab.guru/#0_0_*_*_*
+    - cron: "0 0 * * *"
 
 jobs:
   build:
