@@ -12,7 +12,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def gutil_deps():
-    """Sets up 3rd party workspaces needed to build PINS infrastructure."""
+    """Sets up 3rd party workspaces needed to build Gutil."""
     if not native.existing_rule("com_github_bazelbuild_buildtools"):
         http_archive(
             name = "com_github_bazelbuild_buildtools",
