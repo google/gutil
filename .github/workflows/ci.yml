@@ -1,0 +1,80 @@
+name: "build"
+
+on:
+  workflow_dispatch
+  #push:
+  #  branches: [ master ]
+  #pull_request:
+  #  branches: [ master ]
+  #schedule:
+  #  # Run daily at midnight to ensure we catch regressions.
+  #  # https://crontab.guru/#0_0_*_*_*
+  #  - cron: "0 0 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      BAZEL: bazelisk-linux-amd64
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install bazelisk
+      run: |
+        curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.17.0/$BAZEL"
+        chmod +x $BAZEL
+
+    - name: Mount bazel cache
+      uses: actions/cache/restore@v3
+      with:
+        path: "~/.cache/bazel"
+        key: ci-${{ hashFiles('**/*_deps.bzl', '.bazelrc') }}-${{ github.ref_name }}
+        # The last key, `test-Linux`, is there just for boostrapping-purposes -- it matches the
+        # cache key schema prior to 2023-06-29. It can be revoved in a subsequent PR.
+        restore-keys: |
+          ci-${{ hashFiles('**/*_deps.bzl', '.bazelrc') }}
+          ci
+          test-Linux
+
+    - name: Save start time
+      uses: josStorer/get-current-time@v2
+      id: start-time
+      with:
+        # Unix timestamp -- seconds since 1970.
+        format: X
+
+    - name: Build
+      run: ./$BAZEL build --test_output=errors //...
+
+    - name: Test
+      run: ./$BAZEL test --test_output=errors //...
+
+    - name: Save end time
+      uses: josStorer/get-current-time@v2
+      id: end-time
+      with:
+        # Unix timestamp -- seconds since 1970.
+        format: X
+
+    - name: Calculate build duration
+      run: |
+        START=${{ steps.start-time.outputs.formattedTime }}
+        END=${{ steps.end-time.outputs.formattedTime }}
+        DURATION=$(( $END - $START ))
+        echo "duration=$DURATION" | tee "$GITHUB_ENV"
+
+    - name: Compress cache
+      # This deletes cached archives while keeping the build cache.
+      run: rm -rf $(./$BAZEL info repository_cache)
+
+    - name: Save bazel cache
+      uses: actions/cache/save@v3
+      # We create a new cache entry if either of the following is true:
+      # - We are on the master branch.
+      # - It took more than 5 minutes to build and test.
+      if: github.ref_name == 'master' || env.duration > 300
+      with:
+        path: "~/.cache/bazel"
+        key: ci-${{ hashFiles('**/*_deps.bzl', '.bazelrc') }}-${{ github.ref_name }}-${{ github.run_id }}
+
