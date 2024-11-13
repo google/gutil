@@ -1,13 +1,13 @@
-#include "gutil/proto_ordering.h"
+#include "third_party/pins_infra/gutil/gutil/proto_ordering.h"
 
 #include <vector>
 
 #include "gmock/gmock.h"
 #include "google/protobuf/repeated_ptr_field.h"
 #include "gtest/gtest.h"
-#include "gutil/proto_matchers.h"
-#include "gutil/proto_test.pb.h"
-#include "gutil/testing.h"
+#include "third_party/pins_infra/gutil/gutil/proto_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/proto_test.pb.h"
+#include "third_party/pins_infra/gutil/gutil/testing.h"
 
 namespace gutil {
 namespace {

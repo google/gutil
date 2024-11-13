@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gutil/version.h"
+#include "third_party/pins_infra/gutil/gutil/version.h"
 
 #include <sstream>
 
 #include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/status_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/status_matchers.h"
 
 namespace gutil {
 namespace {
@@ -35,8 +36,9 @@ bool VersionToStringRoundTrips(const Version& version) {
 }
 
 bool StreamInsertionOperatorRoundTrips(const Version& version) {
-  absl::StatusOr<Version> roundtripped_version =
-      ParseVersion((std::ostringstream() << version).str());
+  std::ostringstream stream;
+  stream << version;
+  absl::StatusOr<Version> roundtripped_version = ParseVersion(stream.str());
   return roundtripped_version.ok() && *roundtripped_version == version;
 }
 

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gutil/proto_ordering.h"
+#include "third_party/pins_infra/gutil/gutil/proto_ordering.h"
 
 #include "google/protobuf/message.h"
-#include "gutil/proto.h"
+#include "third_party/pins_infra/gutil/gutil/proto.h"
 
 namespace gutil {
 

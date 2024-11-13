@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gutil/timer.h"
+#include "third_party/pins_infra/gutil/gutil/timer.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"

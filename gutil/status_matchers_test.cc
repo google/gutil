@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "gutil/status_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/status_matchers.h"
 
 #include <string>
 
@@ -20,7 +20,7 @@
 #include "absl/status/statusor.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/status.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 namespace {

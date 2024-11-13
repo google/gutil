@@ -23,7 +23,7 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/util/json_util.h"
 #include "google/protobuf/util/message_differencer.h"
-#include "gutil/status.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 

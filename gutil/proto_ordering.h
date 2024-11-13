@@ -23,7 +23,7 @@
 #include "absl/types/span.h"
 #include "google/protobuf/message.h"
 #include "google/protobuf/repeated_ptr_field.h"
-#include "gutil/proto.h"
+#include "third_party/pins_infra/gutil/gutil/proto.h"
 
 namespace gutil {
 

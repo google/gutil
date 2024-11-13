@@ -19,7 +19,7 @@
 
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
-#include "gutil/status.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 

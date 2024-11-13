@@ -15,14 +15,12 @@
 #ifndef GUTIL_TESTING_H
 #define GUTIL_TESTING_H
 
+#include "absl/log/check.h"
+#include "absl/log/log.h"
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
-#include "glog/logging.h"
-#include "gutil/proto.h"
-#include "gutil/status.h"
-
-// Crash if `status` is not okay. Only use in tests.
-#define CHECK_OK(val) CHECK_EQ(::absl::OkStatus(), (val))
+#include "third_party/pins_infra/gutil/gutil/proto.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 
@@ -31,7 +29,7 @@ namespace gutil {
 template <typename T>
 T ParseProtoOrDie(absl::string_view proto_string) {
   T message;
-  CHECK_OK(ReadProtoFromString(proto_string, &message));
+  CHECK_OK(ReadProtoFromString(proto_string, &message));  // Crash OK
   return message;
 }
 
@@ -40,7 +38,7 @@ T ParseProtoOrDie(absl::string_view proto_string) {
 template <typename T>
 T ParseProtoFileOrDie(absl::string_view proto_file) {
   T message;
-  CHECK_OK(ReadProtoFromFile(proto_file, &message));
+  CHECK_OK(ReadProtoFromFile(proto_file, &message));  // Crash OK
   return message;
 }
 

@@ -1,4 +1,4 @@
-#include "gutil/io.h"
+#include "third_party/pins_infra/gutil/gutil/io.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -6,7 +6,7 @@
 #include "absl/strings/str_split.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/status_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/status_matchers.h"
 
 namespace gutil {
 namespace {

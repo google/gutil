@@ -50,9 +50,9 @@ rules_foreign_cc_dependencies()
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
-#load("//:ondatra/binding_deps.bzl", "binding_deps")
+load("//:ondatra/binding_deps.bzl", "binding_deps")
 
-#binding_deps()
+binding_deps()
 
 go_rules_dependencies()
 
@@ -116,4 +116,3 @@ rules_pkg_dependencies()
 load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
 
 boost_deps()
-

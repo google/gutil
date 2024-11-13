@@ -26,7 +26,7 @@
 #include "absl/strings/str_format.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/status.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 

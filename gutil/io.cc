@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gutil/io.h"
+#include "third_party/pins_infra/gutil/gutil/io.h"
 
 #include <cerrno>
 #include <fstream>
@@ -20,7 +20,7 @@
 #include <string>
 
 #include "absl/strings/str_format.h"
-#include "gutil/status.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 

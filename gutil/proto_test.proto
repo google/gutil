@@ -22,4 +22,3 @@ message TestMessageWithOneof {
     bytes bytes_foo = 4;
   }
 }
-

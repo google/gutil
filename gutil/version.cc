@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gutil/version.h"
+#include "third_party/pins_infra/gutil/gutil/version.h"
 
 #include <ostream>
 #include <string>
 #include <tuple>
 
+#include "absl/log/log.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "glog/logging.h"
-#include "gutil/status.h"
 #include "re2/re2.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 

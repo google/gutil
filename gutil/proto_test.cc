@@ -1,4 +1,4 @@
-#include "gutil/proto.h"
+#include "third_party/pins_infra/gutil/gutil/proto.h"
 
 #include <cstdlib>
 #include <string>
@@ -8,10 +8,10 @@
 #include "absl/strings/str_cat.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/proto_matchers.h"
-#include "gutil/proto_test.pb.h"
-#include "gutil/status.h"
-#include "gutil/status_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/proto_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/proto_test.pb.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
+#include "third_party/pins_infra/gutil/gutil/status_matchers.h"
 
 namespace gutil {
 namespace {
@@ -171,7 +171,9 @@ TEST(ParseJsonAsProto, ParsesTestMessage) {
                                               "bool_field" : true
                                             })json"),
               IsOkAndHolds(EqualsProto(R"pb(
-                int_field: 42 string_field: "bye" bool_field: true
+                int_field: 42
+                string_field: "bye"
+                bool_field: true
               )pb")));
 }
 
@@ -192,7 +194,9 @@ TEST(ParseJsonAsProto, CanIgnoreUnknownFields) {
                                             })json",
                                             /*ignore_unknown_field=*/true),
               IsOkAndHolds(EqualsProto(R"pb(
-                int_field: 42 string_field: "bye" bool_field: true
+                int_field: 42
+                string_field: "bye"
+                bool_field: true
               )pb")));
 }
 
@@ -235,4 +239,3 @@ TEST(SaveProtoToFile, SavesProtoToFileTruncatesFileOnOverwrite) {
 
 }  // namespace
 }  // namespace gutil
-

@@ -19,14 +19,14 @@
 #include <ostream>
 #include <string>
 
+#include "absl/log/log.h"
 #include "absl/strings/string_view.h"
-#include "glog/logging.h"
 #include "gmock/gmock.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 #include "google/protobuf/util/message_differencer.h"
 #include "gtest/gtest.h"
-#include "gutil/proto.h"
+#include "third_party/pins_infra/gutil/gutil/proto.h"
 
 namespace gutil {
 
@@ -219,7 +219,8 @@ class HasOneofCaseMatcher {
   std::string GetOneofCaseName(OneofCase oneof_case) const {
     const google::protobuf::FieldDescriptor* descriptor =
         GetOneofCaseDescriptor(oneof_case);
-    return descriptor == nullptr ? "<unknown case>" : descriptor->name();
+    return descriptor == nullptr ? "<unknown case>"
+                                 : std::string(descriptor->name());
   }
 };
 

@@ -16,12 +16,11 @@
 #include <utility>
 #include <vector>
 
-#include "absl/strings/str_replace.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/proto_matchers.h"
-#include "gutil/proto_test.pb.h"
-#include "gutil/testing.h"
+#include "third_party/pins_infra/gutil/gutil/proto_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/proto_test.pb.h"
+#include "third_party/pins_infra/gutil/gutil/testing.h"
 
 namespace gutil {
 namespace {
@@ -213,4 +212,3 @@ TEST(HasOneofCaseTest, Description) {
 
 }  // namespace
 }  // namespace gutil
-

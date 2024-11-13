@@ -1,9 +1,9 @@
-#include "gutil/collections.h"
+#include "third_party/pins_infra/gutil/gutil/collections.h"
 
 #include "absl/strings/string_view.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/status_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/status_matchers.h"
 
 namespace gutil {
 namespace {

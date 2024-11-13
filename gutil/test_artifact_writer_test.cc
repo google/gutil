@@ -13,19 +13,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "gutil/test_artifact_writer.h"
+#include "third_party/pins_infra/gutil/gutil/test_artifact_writer.h"
 
 #include <string>
 #include <vector>
 
 // Switching benchmark dependency to third_party seems to not output any
 // benchmarking information when run.
+#include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
 #include "benchmark/benchmark.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/status_matchers.h"
-#include "gutil/test_artifact_writer_test.pb.h"
+#include "third_party/pins_infra/gutil/gutil/status_matchers.h"
+#include "third_party/pins_infra/gutil/gutil/test_artifact_writer_test.pb.h"
 
 namespace gutil {
 namespace {
@@ -56,6 +57,10 @@ TEST(BazelTestArtifactWriterTest, AppendToTestArtifact) {
       artifact_writer.AppendToTestArtifact(kTestArtifact, "Hello, World!\n"));
   EXPECT_OK(
       artifact_writer.AppendToTestArtifact(kTestArtifact, GetTestProto()));
+  EXPECT_OK(artifact_writer.AppendToTestArtifact(
+      absl::StrCat("a/b/c/", kTestArtifact), GetTestProto()));
+  EXPECT_OK(artifact_writer.AppendToTestArtifact(
+      absl::StrCat("a/b/d/", kTestArtifact), GetTestProto()));
 }
 
 // Sanity check to rule out crashes and error statuses with mixed appends and

@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       BAZEL: bazelisk-linux-amd64
 
@@ -24,17 +24,23 @@ jobs:
         curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.17.0/$BAZEL"
         chmod +x $BAZEL
 
+    - name: Set up GitHub credentials for private repos
+      run: git config --global url."${SWSS}".InsteadOf "git@github.com:pins/sonic-swss-common.git"
+
+    # - name: Free disk space as workaround for https://github.com/actions/runner-images/issues/2875.
+    #   uses: jlumbroso/free-disk-space@v1.3.1
+    #   with:
+    #     # Keeping these as a precaution, in case we do need them.
+    #     large-packages: false
+
     - name: Mount bazel cache
       uses: actions/cache/restore@v3
       with:
         path: "~/.cache/bazel"
         key: ci-${{ hashFiles('**/*_deps.bzl', '.bazelrc') }}-${{ github.ref_name }}
-        # The last key, `test-Linux`, is there just for boostrapping-purposes -- it matches the
-        # cache key schema prior to 2023-06-29. It can be revoved in a subsequent PR.
         restore-keys: |
           ci-${{ hashFiles('**/*_deps.bzl', '.bazelrc') }}
           ci
-          test-Linux
 
     - name: Save start time
       uses: josStorer/get-current-time@v2
@@ -76,4 +82,3 @@ jobs:
       with:
         path: "~/.cache/bazel"
         key: ci-${{ hashFiles('**/*_deps.bzl', '.bazelrc') }}-${{ github.ref_name }}-${{ github.run_id }}
-

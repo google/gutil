@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gutil/proto.h"
+#include "third_party/pins_infra/gutil/gutil/proto.h"
 
 #include <fcntl.h>
 
@@ -25,8 +25,8 @@
 #include "google/protobuf/io/zero_copy_stream_impl.h"
 #include "google/protobuf/message.h"
 #include "google/protobuf/text_format.h"
-#include "gutil/proto_string_error_collector.h"
-#include "gutil/status.h"
+#include "third_party/pins_infra/gutil/gutil/proto_string_error_collector.h"
+#include "third_party/pins_infra/gutil/gutil/status.h"
 
 namespace gutil {
 
@@ -155,7 +155,7 @@ absl::StatusOr<std::string> GetOneOfFieldName(
     return gutil::NotFoundErrorBuilder()
            << "Oneof field \"" << oneof_name << "\" is not set";
   }
-  return field->name();
+  return std::string(field->name());
 }
 
 std::string PrintTextProto(const google::protobuf::Message &message) {
