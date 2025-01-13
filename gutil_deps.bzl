@@ -54,9 +54,9 @@ def gutil_deps():
     if not native.existing_rule("com_googlesource_code_re2"):
         http_archive(
             name = "com_googlesource_code_re2",
-            url = "https://github.com/google/re2/archive/refs/tags/2023-06-01.tar.gz",
-            strip_prefix = "re2-2023-06-01",
-            sha256 = "8b4a8175da7205df2ad02e405a950a02eaa3e3e0840947cd598e92dca453199b",
+            url = "https://github.com/google/re2/archive/refs/tags/2024-07-02.tar.gz",
+            strip_prefix = "re2-2024-07-02",
+            sha256 = "eb2df807c781601c14a260a507a5bb4509be1ee626024cb45acbd57cb9d4032b",
         )
     if not native.existing_rule("com_google_googleapis"):
         http_archive(
