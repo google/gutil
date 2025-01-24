@@ -56,7 +56,6 @@ def cc_embed_data(
       **kwargs: Args to pass to the cc_library.
     """
     generator = "@@//gutil/embed_data:generate_cc_embed_data"
-    generator_location = "$(location %s)" % generator
     if identifier == None:
         identifier = name
     flags = "--output_header='$(location %s)' --output_impl='$(location %s)'" % (
@@ -79,7 +78,7 @@ def cc_embed_data(
             h_file_output,
         ],
         tools = [generator],
-        cmd = "%s $(SRCS) %s" % (generator_location, flags),
+        cmd = "%s $(SRCS) %s" % (generator, flags),
         testonly = testonly,
     )
     native.cc_library(
