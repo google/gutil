@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("@com_google_googleapis_imports//:imports.bzl", "cc_proto_library")
 
 package(
@@ -359,4 +360,10 @@ cc_test(
         ":timer",
         "@com_google_googletest//:gtest_main",
     ],
+)
+
+bzl_library(
+    name = "diff_test_bzl",
+    srcs = ["diff_test.bzl"],
+    parse_tests = False,
 )
