@@ -1,6 +1,6 @@
-# Use `WORKSPACE.bazel` instead of Bzlmod (`MODULE.bazel`).
-common --noenable_bzlmod
-common --enable_workspace
+# Use Bzlmod (`MODULE.bazel`) instead of `WORKSPACE.bazel`.
+common --enable_bzlmod
+common --noenable_workspace
 
 # Use C++17.
 build --cxxopt=-std=c++17
