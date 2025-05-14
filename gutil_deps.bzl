@@ -43,9 +43,9 @@ def gutil_deps():
     if not native.existing_rule("com_google_protobuf"):
         http_archive(
             name = "com_google_protobuf",
-            url = "https://github.com/protocolbuffers/protobuf/archive/refs/tags/v25.2.zip",
-            strip_prefix = "protobuf-25.2",
-            sha256 = "ddd0f5271f31b549efc74eb39061e142132653d5d043071fcec265bd571e73c4",
+            url = "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protobuf-28.2.tar.gz",
+            strip_prefix = "protobuf-28.2",
+            sha256 = "b2340aa47faf7ef10a0328190319d3f3bee1b24f426d4ce8f4253b6f27ce16db",
         )
     if not native.existing_rule("com_googlesource_code_re2"):
         http_archive(
