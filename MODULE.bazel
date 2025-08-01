@@ -26,11 +26,11 @@ bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "rules_license", version = "1.0.0")
 bazel_dep(
     name = "googleapis",
-    version = "0.0.0-20240819-fe8ba054a",
+    version = "0.0.0-20250604-de157ca3",
     repo_name = "com_google_googleapis",
 )
 
-switched_rules = use_extension("@com_google_googleapis//:extensions.bzl", "switched_rules")
+switched_rules = use_extension("@com_google_googleapis//:repository_rules.bzl", "switched_rules")
 switched_rules.use_languages(
     cc = True,
     grpc = True,
