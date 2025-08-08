@@ -28,19 +28,19 @@
 namespace gutil {
 
 // Returns `true` if the given `message` has no fields set, `false` otherwise.
-bool IsEmptyProto(const google::protobuf::Message &message);
+bool IsEmptyProto(const google::protobuf::Message& message);
 
 // Read the contents of the file into a protobuf.
 absl::Status ReadProtoFromFile(absl::string_view filename,
-                               google::protobuf::Message *message);
+                               google::protobuf::Message* message);
 
 // Read the contents of the string into a protobuf.
 absl::Status ReadProtoFromString(absl::string_view proto_string,
-                                 google::protobuf::Message *message);
+                                 google::protobuf::Message* message);
 
 // Saves the content of a protobuf into a file.
 absl::Status SaveProtoToFile(absl::string_view filename,
-                             const google::protobuf::Message &message);
+                             const google::protobuf::Message& message);
 
 // Read the contents of the given string into a protobuf and returns it.
 template <class T>
@@ -55,19 +55,19 @@ absl::StatusOr<T> ParseTextProto(absl::string_view proto_string) {
 // returns `InvalidArgumentError` otherwise. Optionally, a `differ` can be
 // provided for fine-grained control over how to compute the diff.
 absl::StatusOr<std::string> ProtoDiff(
-    const google::protobuf::Message &message1,
-    const google::protobuf::Message &message2,
-    google::protobuf::util::MessageDifferencer &differ);
+    const google::protobuf::Message& message1,
+    const google::protobuf::Message& message2,
+    google::protobuf::util::MessageDifferencer& differ);
 absl::StatusOr<std::string> ProtoDiff(
-    const google::protobuf::Message &message1,
-    const google::protobuf::Message &message2);
+    const google::protobuf::Message& message1,
+    const google::protobuf::Message& message2);
 
 // Similar to `ProtoDiff`, except returns boolean result of equality comparison.
-bool ProtoEqual(const google::protobuf::Message &message1,
-                const google::protobuf::Message &message2,
-                google::protobuf::util::MessageDifferencer &differ);
-bool ProtoEqual(const google::protobuf::Message &message1,
-                const google::protobuf::Message &message2);
+bool ProtoEqual(const google::protobuf::Message& message1,
+                const google::protobuf::Message& message2,
+                google::protobuf::util::MessageDifferencer& differ);
+bool ProtoEqual(const google::protobuf::Message& message1,
+                const google::protobuf::Message& message2);
 
 // Get the name of the oneof enum that is set.
 // Eg:
@@ -85,13 +85,13 @@ bool ProtoEqual(const google::protobuf::Message &message1,
 // std::string name = GetOneOfFieldName(value, std::string("format"));
 // EXPECT_EQ(name, "hex_str");
 absl::StatusOr<std::string> GetOneOfFieldName(
-    const google::protobuf::Message &message, const std::string &oneof_name);
+    const google::protobuf::Message& message, const std::string& oneof_name);
 
 // Print proto in TextFormat.
-std::string PrintTextProto(const google::protobuf::Message &message);
+std::string PrintTextProto(const google::protobuf::Message& message);
 
 // Print proto in TextFormat in a single line.
-std::string PrintShortTextProto(const google::protobuf::Message &message);
+std::string PrintShortTextProto(const google::protobuf::Message& message);
 
 // Parses the given JSON string into a proto of type `T`.
 template <class T>
@@ -100,7 +100,7 @@ absl::StatusOr<T> ParseJsonAsProto(absl::string_view raw_json_string,
 
 // Serializes the given proto message as a JSON string.
 absl::StatusOr<std::string> SerializeProtoAsJson(
-    const google::protobuf::Message &proto);
+    const google::protobuf::Message& proto);
 
 // -- END OF PUBLIC INTERFACE - Implementation details follow ------------------
 

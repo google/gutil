@@ -19,8 +19,8 @@
 
 namespace gutil {
 
-bool InefficientProtoLessThan(const google::protobuf::Message &message1,
-                              const google::protobuf::Message &message2) {
+bool InefficientProtoLessThan(const google::protobuf::Message& message1,
+                              const google::protobuf::Message& message2) {
   return PrintTextProto(message1) < PrintTextProto(message2);
 }
 

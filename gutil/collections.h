@@ -33,9 +33,9 @@ namespace gutil {
 
 // Returns a vector of the keys in a map collection.
 template <typename M>
-std::vector<typename M::key_type> Keys(const M &m) {
+std::vector<typename M::key_type> Keys(const M& m) {
   std::vector<typename M::key_type> keys;
-  for (const auto &[key, val] : m) keys.push_back(key);
+  for (const auto& [key, val] : m) keys.push_back(key);
   return keys;
 }
 
@@ -44,8 +44,8 @@ std::vector<typename M::key_type> Keys(const M &m) {
 //
 // WARNING: prefer FindOrNull if the value can be large to avoid the copy.
 template <typename M, typename KeyType = typename M::key_type>
-absl::StatusOr<const typename M::mapped_type> FindOrStatus(const M &m,
-                                                           const KeyType &k) {
+absl::StatusOr<const typename M::mapped_type> FindOrStatus(const M& m,
+                                                           const KeyType& k) {
   auto it = m.find(k);
   if (it != m.end()) return it->second;
   if constexpr (std::is_same_v<KeyType, std::string>) {
@@ -58,8 +58,8 @@ absl::StatusOr<const typename M::mapped_type> FindOrStatus(const M &m,
 // Returns a const, non-null pointer of the value associated with a given key
 // if it exists, or a status failure if it does not.
 template <typename M, typename KeyType = typename M::key_type>
-absl::StatusOr<const typename M::mapped_type *> FindPtrOrStatus(
-    const M &m, const KeyType &k) {
+absl::StatusOr<const typename M::mapped_type*> FindPtrOrStatus(
+    const M& m, const KeyType& k) {
   auto it = m.find(k);
   if (it != m.end()) return &it->second;
   if constexpr (std::is_same_v<typename M::key_type, std::string>) {
@@ -72,8 +72,8 @@ absl::StatusOr<const typename M::mapped_type *> FindPtrOrStatus(
 // Returns a mutable, non-null pointer of the value associated with a given key
 // if it exists, or a status failure if it does not.
 template <typename M, typename KeyType = typename M::key_type>
-absl::StatusOr<typename M::mapped_type *> FindMutablePtrOrStatus(
-    M &m, const KeyType &k) {
+absl::StatusOr<typename M::mapped_type*> FindMutablePtrOrStatus(
+    M& m, const KeyType& k) {
   auto it = m.find(k);
   if (it != m.end()) return &it->second;
   if constexpr (std::is_same_v<typename M::key_type, std::string>) {
@@ -86,7 +86,7 @@ absl::StatusOr<typename M::mapped_type *> FindMutablePtrOrStatus(
 // Returns a const pointer of the value associated with a given key if it
 // exists, or a nullptr if it does not.
 template <typename M, typename KeyType = typename M::key_type>
-const typename M::mapped_type *FindOrNull(const M &m, const KeyType &k) {
+const typename M::mapped_type* FindOrNull(const M& m, const KeyType& k) {
   const auto it = m.find(k);
   if (it != m.end()) return &(it->second);
   return nullptr;
@@ -95,7 +95,7 @@ const typename M::mapped_type *FindOrNull(const M &m, const KeyType &k) {
 // Returns a non-const pointer of the value associated with a given key if it
 // exists, or a nullptr if it does not.
 template <typename M, typename KeyType = typename M::key_type>
-typename M::mapped_type *FindOrNull(M &m, const KeyType &k) {
+typename M::mapped_type* FindOrNull(M& m, const KeyType& k) {
   auto it = m.find(k);
   if (it != m.end()) return &(it->second);
   return nullptr;
@@ -104,7 +104,7 @@ typename M::mapped_type *FindOrNull(M &m, const KeyType &k) {
 // Returns a reference of the value associated with a given key if it exists,
 // crashes if it does not.
 template <typename M, typename KeyType = typename M::key_type>
-typename M::mapped_type &FindOrDie(M &map, const KeyType &key) {
+typename M::mapped_type& FindOrDie(M& map, const KeyType& key) {
   auto iter = map.find(key);
   CHECK(iter != map.end()) << "Could not find key";  // Crash OK
   return iter->second;
@@ -113,7 +113,7 @@ typename M::mapped_type &FindOrDie(M &map, const KeyType &key) {
 // Returns a const reference of the value associated with a given key if it
 // exists, crashes if it does not.
 template <typename M, typename KeyType = typename M::key_type>
-const typename M::mapped_type &FindOrDie(const M &map, const KeyType &key) {
+const typename M::mapped_type& FindOrDie(const M& map, const KeyType& key) {
   auto iter = map.find(key);
   CHECK(iter != map.end()) << "Could not find key";  // Crash OK
 
@@ -124,7 +124,7 @@ const typename M::mapped_type &FindOrDie(const M &map, const KeyType &key) {
 // returns the given default value otherwise.
 // NOTE: May be inefficient for large datatypes that are expensive to copy.
 template <typename M, typename KeyType = typename M::key_type>
-typename M::mapped_type FindOrDefault(const M &map, const KeyType &key,
+typename M::mapped_type FindOrDefault(const M& map, const KeyType& key,
                                       typename M::mapped_type default_value) {
   auto it = map.find(key);
   return (it != map.end()) ? it->second : default_value;
@@ -132,8 +132,8 @@ typename M::mapped_type FindOrDefault(const M &map, const KeyType &key,
 
 // Checks if the id is unique in set.
 template <typename M>
-absl::Status InsertIfUnique(absl::flat_hash_set<M> &set, const M &id,
-                            const std::string &error_message) {
+absl::Status InsertIfUnique(absl::flat_hash_set<M>& set, const M& id,
+                            const std::string& error_message) {
   const auto it = set.insert(id);
   if (!it.second) {
     return absl::Status(absl::StatusCode::kInvalidArgument, error_message);
@@ -143,8 +143,8 @@ absl::Status InsertIfUnique(absl::flat_hash_set<M> &set, const M &id,
 }
 
 template <typename K, typename V>
-absl::Status InsertIfUnique(absl::flat_hash_map<K, V> &map, K key, const V &val,
-                            const std::string &error_message) {
+absl::Status InsertIfUnique(absl::flat_hash_map<K, V>& map, K key, const V& val,
+                            const std::string& error_message) {
   auto it = map.insert({key, val});
   if (!it.second) {
     return absl::Status(absl::StatusCode::kInvalidArgument, error_message);
@@ -154,8 +154,8 @@ absl::Status InsertIfUnique(absl::flat_hash_map<K, V> &map, K key, const V &val,
 }
 
 template <typename K, typename V>
-absl::Status InsertIfUnique(google::protobuf::Map<K, V> *map, K key,
-                            const V &val, const std::string &error_message) {
+absl::Status InsertIfUnique(google::protobuf::Map<K, V>* map, K key,
+                            const V& val, const std::string& error_message) {
   auto it = map->insert({key, val});
   if (!it.second) {
     return absl::Status(absl::StatusCode::kInvalidArgument, error_message);

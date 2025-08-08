@@ -30,12 +30,12 @@
 
 namespace gutil {
 
-bool IsEmptyProto(const google::protobuf::Message &message) {
+bool IsEmptyProto(const google::protobuf::Message& message) {
   return message.ByteSizeLong() == 0;
 }
 
 absl::Status ReadProtoFromFile(absl::string_view filename,
-                               google::protobuf::Message *message) {
+                               google::protobuf::Message* message) {
   // Verifies that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -57,7 +57,7 @@ absl::Status ReadProtoFromFile(absl::string_view filename,
 }
 
 absl::Status ReadProtoFromString(absl::string_view proto_string,
-                                 google::protobuf::Message *message) {
+                                 google::protobuf::Message* message) {
   // Verifies that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -78,7 +78,7 @@ absl::Status ReadProtoFromString(absl::string_view proto_string,
 }
 
 absl::Status SaveProtoToFile(absl::string_view filename,
-                             const google::protobuf::Message &message) {
+                             const google::protobuf::Message& message) {
   // Verifies that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -102,9 +102,9 @@ absl::Status SaveProtoToFile(absl::string_view filename,
 }
 
 absl::StatusOr<std::string> ProtoDiff(
-    const google::protobuf::Message &message1,
-    const google::protobuf::Message &message2,
-    google::protobuf::util::MessageDifferencer &differ) {
+    const google::protobuf::Message& message1,
+    const google::protobuf::Message& message2,
+    google::protobuf::util::MessageDifferencer& differ) {
   if (message1.GetDescriptor() != message2.GetDescriptor()) {
     return gutil::InvalidArgumentErrorBuilder()
            << "cannot compute diff for messages of incompatible descriptors `"
@@ -120,16 +120,16 @@ absl::StatusOr<std::string> ProtoDiff(
 
 // Calls `ProtoDiff` with default `MessageDifferencer`.
 absl::StatusOr<std::string> ProtoDiff(
-    const google::protobuf::Message &message1,
-    const google::protobuf::Message &message2) {
+    const google::protobuf::Message& message1,
+    const google::protobuf::Message& message2) {
   google::protobuf::util::MessageDifferencer differ =
       google::protobuf::util::MessageDifferencer();
   return ProtoDiff(message1, message2, differ);
 }
 
-bool ProtoEqual(const google::protobuf::Message &message1,
-                const google::protobuf::Message &message2,
-                google::protobuf::util::MessageDifferencer &differ) {
+bool ProtoEqual(const google::protobuf::Message& message1,
+                const google::protobuf::Message& message2,
+                google::protobuf::util::MessageDifferencer& differ) {
   if (message1.GetDescriptor() != message2.GetDescriptor()) {
     return false;
   }
@@ -138,18 +138,18 @@ bool ProtoEqual(const google::protobuf::Message &message1,
 }
 
 // Calls `ProtoEqual` with default `MessageDifferencer`.
-bool ProtoEqual(const google::protobuf::Message &message1,
-                const google::protobuf::Message &message2) {
+bool ProtoEqual(const google::protobuf::Message& message1,
+                const google::protobuf::Message& message2) {
   google::protobuf::util::MessageDifferencer differ =
       google::protobuf::util::MessageDifferencer();
   return ProtoEqual(message1, message2, differ);
 }
 
 absl::StatusOr<std::string> GetOneOfFieldName(
-    const google::protobuf::Message &message, const std::string &oneof_name) {
-  const auto *oneof_descriptor =
+    const google::protobuf::Message& message, const std::string& oneof_name) {
+  const auto* oneof_descriptor =
       message.GetDescriptor()->FindOneofByName(oneof_name);
-  const auto *field = message.GetReflection()->GetOneofFieldDescriptor(
+  const auto* field = message.GetReflection()->GetOneofFieldDescriptor(
       message, oneof_descriptor);
   if (!field) {
     return gutil::NotFoundErrorBuilder()
@@ -158,7 +158,7 @@ absl::StatusOr<std::string> GetOneOfFieldName(
   return std::string(field->name());
 }
 
-std::string PrintTextProto(const google::protobuf::Message &message) {
+std::string PrintTextProto(const google::protobuf::Message& message) {
   std::string message_text;
 
   google::protobuf::TextFormat::Printer printer;
@@ -170,7 +170,7 @@ std::string PrintTextProto(const google::protobuf::Message &message) {
 }
 
 // Print proto in TextFormat with single line mode enabled.
-std::string PrintShortTextProto(const google::protobuf::Message &message) {
+std::string PrintShortTextProto(const google::protobuf::Message& message) {
   std::string message_short_text;
 
   google::protobuf::TextFormat::Printer printer;
@@ -187,7 +187,7 @@ std::string PrintShortTextProto(const google::protobuf::Message &message) {
 }
 
 absl::StatusOr<std::string> SerializeProtoAsJson(
-    const google::protobuf::Message &proto) {
+    const google::protobuf::Message& proto) {
   std::string json;
   RETURN_IF_ERROR(gutil::ToAbslStatus(
       google::protobuf::util::MessageToJsonString(proto, &json)));

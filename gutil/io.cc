@@ -26,7 +26,7 @@ namespace gutil {
 
 namespace {
 
-absl::Status ErrorNoToAbsl(const char *operation, const std::string &path) {
+absl::Status ErrorNoToAbsl(const char* operation, const std::string& path) {
   switch (errno) {
     case EACCES:
     case ENOENT:
@@ -40,7 +40,7 @@ absl::Status ErrorNoToAbsl(const char *operation, const std::string &path) {
 
 }  // namespace
 
-absl::StatusOr<std::string> ReadFile(const std::string &path) {
+absl::StatusOr<std::string> ReadFile(const std::string& path) {
   std::ifstream f;
   f.open(path.c_str());
   if (f.fail()) {
@@ -57,7 +57,7 @@ absl::StatusOr<std::string> ReadFile(const std::string &path) {
 }
 
 absl::StatusOr<std::vector<std::string>> ReadFileLines(
-    const std::string &path) {
+    const std::string& path) {
   std::ifstream f;
   f.open(path.c_str());
   if (f.fail()) {
@@ -75,7 +75,7 @@ absl::StatusOr<std::vector<std::string>> ReadFileLines(
   return results;
 }
 
-absl::Status WriteFile(const std::string &content, const std::string &path) {
+absl::Status WriteFile(const std::string& content, const std::string& path) {
   std::ofstream f;
   f.open(path.c_str());
   if (f.fail()) {
