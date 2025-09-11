@@ -14,6 +14,8 @@
 
 """Embeds data files into a C++ or Go module."""
 
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 def clean_dep(dep):
     """Returns an absolute Bazel path to 'dep'.
 
@@ -89,7 +91,7 @@ def cc_embed_data(
         cmd = "%s $(SRCS) %s" % (generator_location, flags),
         testonly = testonly,
     )
-    native.cc_library(
+    cc_library(
         name = name,
         hdrs = [h_file_output],
         srcs = [cc_file_output],

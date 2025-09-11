@@ -61,3 +61,10 @@ def gutil_deps():
             strip_prefix = "googleapis-f405c718d60484124808adb7fb5963974d654bb4",
             sha256 = "406b64643eede84ce3e0821a1d01f66eaf6254e79cb9c4f53be9054551935e79",
         )
+    if not native.existing_rule("rules_cc"):
+        http_archive(
+            name = "rules_cc",
+            sha256 = "b8b918a85f9144c01f6cfe0f45e4f2838c7413961a8ff23bc0c6cdf8bb07a3b6",
+            strip_prefix = "rules_cc-0.1.5",
+            url = "https://github.com/bazelbuild/rules_cc/releases/download/0.1.5/rules_cc-0.1.5.tar.gz",
+        )

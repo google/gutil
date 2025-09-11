@@ -146,13 +146,13 @@ absl::Status TestArtifactWriter::AppendToTestArtifact(
 
 absl::Status BazelTestArtifactWriter::StoreTestArtifact(
     absl::string_view filename, absl::string_view contents) {
-  absl::MutexLock lock(&this->write_mutex_);
+  absl::MutexLock lock(this->write_mutex_);
   return WriteToTestArtifact(filename, contents, std::ios_base::trunc,
                              open_file_by_filepath_);
 }
 absl::Status BazelTestArtifactWriter::AppendToTestArtifact(
     absl::string_view filename, absl::string_view contents) {
-  absl::MutexLock lock(&this->write_mutex_);
+  absl::MutexLock lock(this->write_mutex_);
   return WriteToTestArtifact(filename, contents, std::ios_base::app,
                              open_file_by_filepath_);
 }
