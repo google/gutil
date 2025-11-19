@@ -16,10 +16,10 @@
 #define GUTIL_GUTIL_IO_H_
 
 #include <string>
+#include <vector>
 
 #include "absl/status/status.h"
-#include "absl/strings/string_view.h"
-#include "gutil/status.h"
+#include "absl/status/statusor.h"
 
 namespace gutil {
 

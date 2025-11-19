@@ -13,6 +13,7 @@
 // limitations under the License.
 #include "gutil/status_matchers.h"
 
+#include <memory>
 #include <string>
 
 #include "absl/memory/memory.h"
@@ -20,7 +21,6 @@
 #include "absl/status/statusor.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "gutil/status.h"
 
 namespace gutil {
 namespace {

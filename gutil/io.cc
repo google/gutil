@@ -15,12 +15,16 @@
 #include "gutil/io.h"
 
 #include <cerrno>
+#include <cstring>
 #include <fstream>
-#include <streambuf>
+#include <ios>
+#include <iterator>
 #include <string>
+#include <vector>
 
+#include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
-#include "gutil/status.h"
 
 namespace gutil {
 

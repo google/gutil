@@ -36,7 +36,6 @@ cc_library(
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/strings:cord",
-        "@com_google_absl//absl/types:optional",
     ],
 )
 
@@ -69,7 +68,6 @@ cc_library(
     testonly = True,
     hdrs = ["status_matchers.h"],
     deps = [
-        ":status",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
@@ -82,7 +80,6 @@ cc_test(
     name = "status_matchers_test",
     srcs = ["status_matchers_test.cc"],
     deps = [
-        ":status",
         ":status_matchers",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/status",
@@ -98,10 +95,7 @@ cc_library(
     hdrs = ["testing.h"],
     deps = [
         ":proto",
-        ":status",
-        "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/status",
         "@com_google_absl//absl/strings",
     ],
 )
@@ -111,6 +105,7 @@ cc_test(
     srcs = ["testing_test.cc"],
     deps = [
         ":testing",
+        "@com_google_absl//absl/strings",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -121,7 +116,6 @@ cc_library(
         "collections.h",
     ],
     deps = [
-        ":status",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/container:flat_hash_set",
         "@com_google_absl//absl/log",
@@ -165,9 +159,8 @@ cc_library(
         "io.h",
     ],
     deps = [
-        ":status",
         "@com_google_absl//absl/status",
-        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings:str_format",
     ],
 )
@@ -297,6 +290,7 @@ cc_library(
     deps = [
         ":proto",
         ":status",
+        "@com_google_absl//absl/base:core_headers",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
@@ -315,7 +309,6 @@ cc_library(
     deps = [
         ":proto",
         "@com_google_absl//absl/algorithm:container",
-        "@com_google_absl//absl/types:span",
         "@com_google_protobuf//:protobuf",
     ],
 )
@@ -359,6 +352,7 @@ cc_test(
     srcs = ["timer_test.cc"],
     deps = [
         ":timer",
+        "@com_google_absl//absl/time",
         "@com_google_googletest//:gtest_main",
     ],
 )

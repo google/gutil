@@ -13,11 +13,15 @@
 // limitations under the License.
 #include "gutil/status.h"
 
+#include <iostream>
+#include <ostream>
 #include <string>
 
 #include "absl/status/status.h"
+#include "absl/strings/cord.h"
 #include "absl/strings/str_cat.h"
-#include "grpcpp/grpcpp.h"
+#include "absl/strings/string_view.h"
+#include "grpcpp/support/status.h"
 
 namespace gutil {
 

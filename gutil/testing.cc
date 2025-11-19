@@ -13,7 +13,10 @@
 // limitations under the License.
 #include "gutil/testing.h"
 
+#include <string>
+
 #include "absl/strings/ascii.h"
+#include "absl/strings/string_view.h"
 
 namespace gutil {
 

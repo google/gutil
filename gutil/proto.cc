@@ -25,6 +25,7 @@
 #include "google/protobuf/io/zero_copy_stream_impl.h"
 #include "google/protobuf/message.h"
 #include "google/protobuf/text_format.h"
+#include "google/protobuf/util/json_util.h"
 #include "gutil/proto_string_error_collector.h"
 #include "gutil/status.h"
 

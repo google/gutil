@@ -13,6 +13,7 @@
 // limitations under the License.
 #include "proto_matchers.h"
 
+#include <string>
 #include <utility>
 #include <vector>
 

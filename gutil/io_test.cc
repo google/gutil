@@ -1,7 +1,8 @@
 #include "gutil/io.h"
 
-#include <cstdio>
 #include <cstdlib>
+#include <string>
+#include <vector>
 
 #include "absl/strings/str_split.h"
 #include "gmock/gmock.h"
