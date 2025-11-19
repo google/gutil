@@ -27,7 +27,6 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "google/protobuf/map.h"
-#include "gutil/status.h"
 
 namespace gutil {
 

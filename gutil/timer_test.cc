@@ -14,6 +14,8 @@
 
 #include "gutil/timer.h"
 
+#include "absl/time/clock.h"
+#include "absl/time/time.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 

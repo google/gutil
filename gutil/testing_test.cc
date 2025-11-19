@@ -1,6 +1,6 @@
 #include "gutil/testing.h"
 
-#include "gmock/gmock.h"
+#include "absl/strings/str_cat.h"
 #include "gtest/gtest.h"
 
 namespace gutil {

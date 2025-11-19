@@ -21,10 +21,9 @@
 #include <utility>
 
 #include "absl/algorithm/container.h"
-#include "absl/types/span.h"
 #include "google/protobuf/message.h"
 #include "google/protobuf/repeated_ptr_field.h"
-#include "gutil/proto.h"
+#include "google/protobuf/util/message_differencer.h"
 
 namespace gutil {
 

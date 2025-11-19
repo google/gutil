@@ -18,11 +18,8 @@
 #include <string>
 
 #include "absl/log/check.h"
-#include "absl/log/log.h"
-#include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 #include "gutil/proto.h"
-#include "gutil/status.h"
 
 namespace gutil {
 

@@ -15,8 +15,8 @@ limitations under the License.
 
 #include "gutil/test_artifact_writer.h"
 
+#include <cstdint>
 #include <string>
-#include <vector>
 
 // Switching benchmark dependency to third_party seems to not output any
 // benchmarking information when run.
