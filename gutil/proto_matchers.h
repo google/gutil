@@ -15,12 +15,17 @@
 #ifndef GUTIL_PROTO_MATCHERS_H_
 #define GUTIL_PROTO_MATCHERS_H_
 
+#include <initializer_list>
 #include <memory>
 #include <ostream>
 #include <string>
+#include <utility>
 
+#include "absl/container/flat_hash_set.h"
+#include "absl/log/absl_log.h"
 #include "absl/log/log.h"
 #include "absl/strings/str_cat.h"
+#include "absl/strings/str_join.h"
 #include "absl/strings/string_view.h"
 #include "gmock/gmock.h"
 #include "google/protobuf/descriptor.h"
@@ -45,6 +50,11 @@ namespace gutil {
 //                   exact { str: "16" }
 //                 }
 //               )pb"));
+//
+// This matcher supports transformers like `Partially` and `IgnoringFields`:
+//   EXPECT_THAT(actual, Partially(EqualsProto(expected)));
+//   EXPECT_THAT(actual, IgnoringFields({"my.package.MyProto.timestamp"},
+//                                      EqualsProto(expected)));
 //
 // Sample output on failure:
 //   Value of: MyCall()
@@ -81,8 +91,12 @@ class ProtobufEqMatcher {
       : expected_text_{expected_text} {}
 
   void DescribeTo(std::ostream* os, bool negated) const {
-    *os << "is " << (negated ? "not " : "") << "equal to "
-        << (expected_ == nullptr ? ""
+    *os << "is " << (negated ? "not " : "") << "equal to ";
+    if (!ignore_field_qualified_names_.empty()) {
+      *os << "(ignoring fields: "
+          << absl::StrJoin(ignore_field_qualified_names_, ", ") << ") ";
+    }
+    *os << (expected_ == nullptr ? ""
                                  : absl::StrCat(expected_->GetTypeName(), " "))
         << "<\n"
         << expected_text_ << ">";
@@ -105,7 +119,7 @@ class ProtobufEqMatcher {
             AS_SET);
 
     // When parsing from a proto text string we must first create a temporary
-    // with the same proto type as the "acutal" argument.
+    // with the same proto type as the "actual" argument.
     if (expected_ == nullptr) {
       absl::StatusOr<ProtoType> expected =
           gutil::ParseTextProto<ProtoType>(expected_text_);
@@ -117,6 +131,28 @@ class ProtobufEqMatcher {
       }
     }
 
+    // Setup fields to ignore.
+    if (!ignore_field_qualified_names_.empty()) {
+      const google::protobuf::DescriptorPool* pool =
+          actual.GetDescriptor()->file()->pool();
+      for (const auto& field_name : ignore_field_qualified_names_) {
+        if (pool != nullptr) {
+          const google::protobuf::FieldDescriptor* field_desc =
+              pool->FindFieldByName(field_name);
+          if (field_desc != nullptr) {
+            differ.IgnoreField(field_desc);
+          } else {
+            ABSL_LOG(WARNING)
+                << "Could not find field to ignore: '" << field_name
+                << "' for proto type '" << actual.GetTypeName() << "'.";
+          }
+        } else {
+          ABSL_LOG(WARNING) << "Could not get descriptor pool for proto type '"
+                            << actual.GetTypeName() << "'.";
+        }
+      }
+    }
+
     // Otherwise we can compare directly with the passed protobuf message.
     bool equal = differ.Compare(*expected_, actual);
     if (!equal) {
@@ -124,8 +160,17 @@ class ProtobufEqMatcher {
     }
     return equal;
   }
+
+  // Allows transformers to modify this matcher.
+  ProtobufEqMatcher& mutable_impl() { return *this; }
+
   void SetComparePartially() {
     comparison_scope_ = google::protobuf::util::MessageDifferencer::PARTIAL;
+  }
+
+  template <class Iterator>
+  void AddIgnoreFields(Iterator first, Iterator last) {
+    ignore_field_qualified_names_.insert(first, last);
   }
 
  private:
@@ -133,6 +178,7 @@ class ProtobufEqMatcher {
   std::string expected_text_;
   google::protobuf::util::MessageDifferencer::Scope comparison_scope_ =
       google::protobuf::util::MessageDifferencer::FULL;
+  absl::flat_hash_set<std::string> ignore_field_qualified_names_;
 };
 
 inline ::testing::PolymorphicMatcher<ProtobufEqMatcher> EqualsProto(
@@ -241,6 +287,8 @@ HasOneofCaseMatcher<ProtoMessage> HasOneofCase(absl::string_view oneof_name,
   return HasOneofCaseMatcher<ProtoMessage>(oneof_name, expected_oneof_case);
 }
 
+// -- Matcher Transformers -----------------------------------------------------
+
 // Partially(m) returns a matcher that is the same as m, except that
 // only fields present in the expected protobuf are considered (using
 // google::protobuf::util::MessageDifferencer's PARTIAL comparison option).  For
@@ -251,6 +299,45 @@ template <class InnerProtoMatcher>
 inline InnerProtoMatcher Partially(InnerProtoMatcher inner_proto_matcher) {
   inner_proto_matcher.mutable_impl().SetComparePartially();
   return inner_proto_matcher;
+}
+
+// IgnoringFields(fields, m) returns a matcher that is the same as m, except the
+// specified fields will be ignored when matching. Each element in fields
+// must be the fully qualified name of the field (e.g.
+// "my.package.MyProto.field_name").
+template <class InnerProtoMatcher, class Container>
+inline InnerProtoMatcher IgnoringFields(const Container& ignore_fields,
+                                        InnerProtoMatcher inner_proto_matcher) {
+  inner_proto_matcher.mutable_impl().AddIgnoreFields(ignore_fields.begin(),
+                                                     ignore_fields.end());
+  return inner_proto_matcher;
+}
+
+template <class InnerProtoMatcher, class T>
+inline InnerProtoMatcher IgnoringFields(std::initializer_list<T> il,
+                                        InnerProtoMatcher inner_proto_matcher) {
+  inner_proto_matcher.mutable_impl().AddIgnoreFields(il.begin(), il.end());
+  return inner_proto_matcher;
+}
+
+// -- Pointwise Helper Matcher --
+
+// MATCHER_P to use gutil::IgnoringFields with {actual, expected} proto tuples.
+// This adapter unpacks the tuple and builds the configured IgnoringFields(...,
+// EqualsProto(expected)) per pair. 'fields_to_ignore': A container of fully
+// qualified field name strings.
+MATCHER_P(EqualsProtoIgnoringFields, fields_to_ignore,
+          absl::StrCat("is a pair of equal protobufs ",
+                       (fields_to_ignore.empty()
+                            ? ""
+                            : absl::StrCat("(ignoring fields: ",
+                                           absl::StrJoin(fields_to_ignore,
+                                                         ", "),
+                                           ")")))) {
+  const auto& [actual, expected] = arg;
+  return testing::ExplainMatchResult(
+      gutil::IgnoringFields(fields_to_ignore, gutil::EqualsProto(expected)),
+      actual, result_listener);
 }
 
 }  // namespace gutil

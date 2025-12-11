@@ -27,6 +27,8 @@ namespace gutil {
 namespace {
 
 using ::testing::Not;
+using ::testing::Pointwise;
+using ::testing::UnorderedPointwise;
 
 TEST(ProtoMatcher, EqualsProto) {
   TestMessage message;
@@ -106,7 +108,7 @@ TEST(BinaryEqualsProtoTest, WorksWithPointwiseMatcher) {
       ParseProtoOrDie<TestMessage>("int_field: 24"),
       ParseProtoOrDie<TestMessage>("string_field: \"hi\""),
   };
-  EXPECT_THAT(protos, testing::Pointwise(EqualsProto(), protos));
+  EXPECT_THAT(protos, Pointwise(EqualsProto(), protos));
 }
 
 TEST(BinaryEqualsProtoTest, DescribeBinaryEqualsProto) {
@@ -166,6 +168,105 @@ TEST(PartiallyMatcherTest, DifferentlProtosDoNotMatch) {
                 string_field: "bar")pb"))));
 }
 
+// -- Tests for IgnoringFields --
+
+TEST(IgnoringFieldsMatcherTest, IgnoringFieldsWithStringMatchSucceeds) {
+  EXPECT_THAT(
+      ParseProtoOrDie<TestMessage>(R"pb(int_field: 123 string_field: "foo")pb"),
+      IgnoringFields({"gutil.TestMessage.string_field"},
+                     EqualsProto(ParseProtoOrDie<TestMessage>(
+                         R"pb(int_field: 123 string_field: "bar")pb"))));
+}
+
+TEST(IgnoringFieldsMatcherTest, IgnoringFieldsWithStringMatchFails) {
+  EXPECT_THAT(
+      ParseProtoOrDie<TestMessage>(R"pb(int_field: 123 string_field: "foo")pb"),
+      Not(IgnoringFields({"gutil.TestMessage.string_field"},
+                         EqualsProto(ParseProtoOrDie<TestMessage>(
+                             R"pb(int_field: 456 string_field: "bar")pb")))));
+}
+
+TEST(IgnoringFieldsMatcherTest, IgnoringMultipleFieldsWithStringMatchSucceeds) {
+  EXPECT_THAT(
+      ParseProtoOrDie<TestMessage>(R"pb(int_field: 123
+                                        string_field: "foo"
+                                        bool_field: true)pb"),
+      IgnoringFields(
+          {"gutil.TestMessage.string_field", "gutil.TestMessage.int_field"},
+          EqualsProto(ParseProtoOrDie<TestMessage>(
+              R"pb(int_field: 456 string_field: "bar" bool_field: true)pb"))));
+}
+
+TEST(IgnoringFieldsMatcherTest, DuplicateIgnoredFieldsMatchSucceeds) {
+  EXPECT_THAT(
+      ParseProtoOrDie<TestMessage>(R"pb(int_field: 123 string_field: "foo")pb"),
+      IgnoringFields(
+          {"gutil.TestMessage.string_field", "gutil.TestMessage.string_field"},
+          EqualsProto(ParseProtoOrDie<TestMessage>(
+              R"pb(int_field: 123 string_field: "bar")pb"))));
+}
+
+// -- Tests for UnorderedPointwise with EqualsProtoIgnoringFields --
+
+TEST(UnorderedPointwiseIgnoringFieldsTest,
+     UnorderedPointwiseIgnoringFieldsWithStringMatchSucceeds) {
+  EXPECT_THAT(
+      std::vector<TestMessage>({
+          ParseProtoOrDie<TestMessage>(R"pb(
+            string_field: "A" bool_field: false)pb"),
+          ParseProtoOrDie<TestMessage>(R"pb(
+            string_field: "B" bool_field: true)pb"),
+      }),
+      UnorderedPointwise(EqualsProtoIgnoringFields(std::vector<std::string>{
+                             "gutil.TestMessage.string_field"}),
+                         std::vector<TestMessage>({
+                             ParseProtoOrDie<TestMessage>(R"pb(
+                               string_field: "Bb"
+                               bool_field: true)pb"),
+                             ParseProtoOrDie<TestMessage>(R"pb(
+                               string_field: "Aa"
+                               bool_field: false)pb"),
+                         })));
+}
+
+TEST(UnorderedPointwiseIgnoringFieldsTest,
+     UnorderedPointwiseIgnoringFieldsWithNonIgnoredFieldMatchFails) {
+  EXPECT_THAT(
+      std::vector<TestMessage>({ParseProtoOrDie<TestMessage>(
+                                    R"pb(int_field: 1 string_field: "A")pb"),
+                                ParseProtoOrDie<TestMessage>(
+                                    R"pb(int_field: 2 string_field: "B")pb")}),
+      Not(
+          UnorderedPointwise(
+              EqualsProtoIgnoringFields(
+                  std::vector<std::string>{"gutil.TestMessage.string_field"}),
+              std::vector<TestMessage>({
+                  ParseProtoOrDie<TestMessage>(R"pb(int_field: 2
+                                                    string_field: "Bb")pb"),
+                  ParseProtoOrDie<TestMessage>(R"pb(int_field: 3
+                                                    string_field: "Aa")pb"),
+              }))));
+}
+
+TEST(UnorderedPointwiseIgnoringFieldsTest,
+     UnorderedPointwiseIgnoringFieldsWithSizeMismatchMatchFails) {
+  EXPECT_THAT(
+      std::vector<TestMessage>({
+          ParseProtoOrDie<TestMessage>(R"pb(int_field: 1 string_field: "A")pb"),
+      }),
+      Not(
+          UnorderedPointwise(
+              EqualsProtoIgnoringFields(
+                  std::vector<std::string>{"gutil.TestMessage.string_field"}),
+              std::vector<TestMessage>({
+                  ParseProtoOrDie<TestMessage>(R"pb(int_field: 1
+                                                    string_field: "Aa")pb"),
+                  ParseProtoOrDie<TestMessage>(R"pb(int_field: 2
+                                                    string_field: "Bb")pb"),
+              }))));
+}
+
+// --- HasOneofCase Tests ---
 TEST(HasOneofCaseTest, NotHasOneofCase) {
   EXPECT_THAT(gutil::ParseProtoOrDie<TestMessageWithOneof>(R"pb()pb"),
               Not(HasOneofCase<TestMessageWithOneof>(
