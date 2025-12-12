@@ -21,7 +21,7 @@
 #include "absl/strings/cord.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
-#include "grpcpp/support/status.h"
+#include "third_party/grpc/include/grpcpp/support/status.h"
 
 namespace gutil {
 
