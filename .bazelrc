@@ -1,15 +1,15 @@
-# Use `WORKSPACE.bazel` instead of Bzlmod (`MODULE.bazel`).
-common --noenable_bzlmod
-common --enable_workspace
+# Use Bzlmod (`MODULE.bazel`) instead of `WORKSPACE.bazel`.
+common --enable_bzlmod
+common --noenable_workspace
 
-# Use C++17.
-build --cxxopt=-std=c++17
-build --host_cxxopt=-std=c++17
+# Use C++20.
+build --cxxopt=-std=c++20
+build --host_cxxopt=-std=c++20
 
 # Use Clang.
 build --action_env=CC=clang
 build --action_env=CXX=clang++
+build --repo_env=CC=/usr/bin/clang  # Needed on macOS.
 
 # To allow loops with int and comparison against a .size() that's size_t.
-build --copt='-Wno-sign-compare' --host_copt='-Wno-sign-compare'
-run --copt='-Wno-sign-compare' --host_copt='-Wno-sign-compare'
+common --copt='-Wno-sign-compare' --host_copt='-Wno-sign-compare'

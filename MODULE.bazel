@@ -17,66 +17,35 @@
 module(
     name = "gutil",
     version = "head",
-    bazel_compatibility = [">=7.4.1"],
-    compatibility_level = 1,
-    repo_name = "com_github_google_gutil",
+    # TODO: Remove upper bound once we support Bazel 9.x.
+    bazel_compatibility = [
+        ">=7.4.1",
+        "<9.0.0",
+    ],
 )
 
-bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "abseil-cpp", version = "20260107.1")
+bazel_dep(name = "bazel_skylib", version = "1.9.0")
+
+# Not a dev dependency because we provide some gutil test libraries.
+bazel_dep(name = "googletest", version = "1.17.0.bcr.2")
+bazel_dep(name = "grpc", version = "1.76.0.bcr.1")
+bazel_dep(name = "protobuf", version = "33.5")
+bazel_dep(name = "re2", version = "2025-11-05.bcr.1")
+bazel_dep(name = "rules_cc", version = "0.2.17")
 bazel_dep(name = "rules_license", version = "1.0.0")
-bazel_dep(
-    name = "googleapis",
-    version = "0.0.0-20240819-fe8ba054a",
-    repo_name = "com_google_googleapis",
-)
 
-switched_rules = use_extension("@com_google_googleapis//:extensions.bzl", "switched_rules")
-switched_rules.use_languages(
-    cc = True,
-    grpc = True,
-)
-use_repo(switched_rules, "com_google_googleapis_imports")
-
-bazel_dep(
-    name = "abseil-cpp",
-    version = "20250814.0",
-    repo_name = "com_google_absl",
-)
-
+# Including this allows us to auto-format all Bazel files by running
+# ```
+# bazel run -- @buildifier_prebuilt//:buildifier -lint=fix -r $(bazel info workspace)
+# ```
 bazel_dep(
     name = "buildifier_prebuilt",
-    version = "8.0.3",
+    version = "8.2.1.2",
     dev_dependency = True,
-    repo_name = "com_github_buildifier_prebuilt",
 )
-
-# Note: Googletest is NOT a dev_dependency. Some Gutil test utilities
-# intended to be used by Gutil users depend on GoogleTest.
-bazel_dep(
-    name = "googletest",
-    version = "1.15.2",
-    repo_name = "com_google_googletest",
-)
-
 bazel_dep(
     name = "google_benchmark",
     version = "1.8.5",
     dev_dependency = True,
-    repo_name = "com_google_benchmark",
-)
-
-bazel_dep(
-    name = "grpc",
-    version = "1.66.0.bcr.2",
-    repo_name = "com_github_grpc_grpc",
-)
-bazel_dep(
-    name = "protobuf",
-    version = "25.6",
-    repo_name = "com_google_protobuf",
-)
-bazel_dep(
-    name = "re2",
-    version = "2024-07-02.bcr.1",
-    repo_name = "com_googlesource_code_re2",
 )
