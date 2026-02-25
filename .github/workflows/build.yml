@@ -20,51 +20,36 @@ jobs:
 
     strategy:
       matrix:
+        # TODO: Add back `latest` once we support Bazel 9.x.
         bazel_version: [7.x, 8.x]
-        # TODO: Add latest (Bazel 9.x) once we support it.
 
     env:
       USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Mount bazel cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
-          path: "~/.cache/bazel"
-          key: bazel-${{ matrix.bazel_version }}-${{ hashFiles('MODULE.bazel', '.bazelrc') }}-${{ github.ref_name }}
+          path: ~/.cache/bazel
+          key: bazel-${{ matrix.bazel_version }}-${{ hashFiles('**/*.bazel*', '**/*.bzl') }}
           restore-keys: |
-            bazel-${{ matrix.bazel_version }}-${{ hashFiles('MODULE.bazel', '.bazelrc') }}
             bazel-${{ matrix.bazel_version }}-
 
       - name: Save start time
-        id: start-time
-        run: echo "time=$(date +%s)" >> "$GITHUB_OUTPUT"
+        run: echo "START_TIME=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Build
         run: bazel build --test_output=errors //...
       - name: Test
         run: bazel test --test_output=errors //...
 
-      - name: Save end time
-        # Always save the end time so we can calculate the build duration.
-        if: always()
-        id: end-time
-        run: echo "time=$(date +%s)" >> "$GITHUB_OUTPUT"
-
       - name: Calculate build duration
-        # Always calculate the build duration so we can update the cache if needed.
         if: always()
-        run: |
-          START=${{ steps.start-time.outputs.time }}
-          END=${{ steps.end-time.outputs.time }}
-          DURATION=$(( $END - $START ))
-          echo "duration=$DURATION" | tee "$GITHUB_ENV"
-
+        run: echo "duration=$(( $(date +%s) - START_TIME ))" >> "$GITHUB_ENV"
 
       - name: Compress cache
-        # Always compress the cache so we can update the cache if needed.
         if: always()
         run: rm -rf $(bazel info repository_cache)
 
@@ -79,4 +64,4 @@ jobs:
         if: always() && (github.ref_name == 'main' || env.duration > 300)
         with:
           path: "~/.cache/bazel"
-          key: bazel-${{ matrix.bazel_version }}-${{ hashFiles('MODULE.bazel', '.bazelrc') }}-${{ github.ref_name }}-${{ github.run_id }}
+          key: bazel-${{ matrix.bazel_version }}-${{ hashFiles('**/*.bazel*', '**/*.bzl') }}-${{ github.run_id }}
