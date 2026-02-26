@@ -10,9 +10,3 @@ build --host_cxxopt=-std=c++17
 build --action_env=CC=clang
 build --action_env=CXX=clang++
 build --repo_env=CC=/usr/bin/clang  # Needed on macOS.
-
-# Work around missing includes in grpc, needed for Clang.
-build --cxxopt=-includestring
-build --cxxopt=-includealgorithm
-build --cxxopt=-includelimits
-build --features=-layering_check
