@@ -21,7 +21,6 @@
 #include "absl/strings/cord.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
-#include "third_party/grpc/include/grpcpp/support/status.h"
 
 namespace gutil {
 
@@ -60,16 +59,6 @@ absl::Status gutil::StatusBuilder::GetStatusAndLog() const {
         new_status.SetPayload(url, cord);
       });
   return new_status;
-}
-
-grpc::Status AbslStatusToGrpcStatus(const absl::Status& status) {
-  return grpc::Status(static_cast<grpc::StatusCode>(status.code()),
-                      std::string(status.message()));
-}
-
-absl::Status GrpcStatusToAbslStatus(const grpc::Status& status) {
-  return absl::Status(static_cast<absl::StatusCode>(status.error_code()),
-                      status.error_message());
 }
 
 }  // namespace gutil
