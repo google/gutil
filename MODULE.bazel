@@ -16,7 +16,7 @@
 
 module(
     name = "gutil",
-    version = "head",
+    version = "20260226.0",
     # TODO: Remove upper bound once we support Bazel 9.x.
     bazel_compatibility = [
         ">=7.4.1",
