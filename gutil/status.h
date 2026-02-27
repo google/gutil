@@ -26,23 +26,76 @@
 #include "absl/strings/cord.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
-#include "grpcpp/support/status.h"
 
 namespace gutil {
+
+namespace internal {
+
+// A concept for types that have a gRPC-like status interface. We introduce a
+// concept to avoid depending on gRPC, which many gutil users don't use and
+// which tends to cause build issues.
+template <typename T>
+concept GrpcLike = requires(T s) {
+  { s.error_code() };
+  requires std::is_enum_v<decltype(s.error_code())>;
+  { std::string(s.error_message()) };
+  { T(s.error_code(), s.error_message()) };
+};
+
+// A helper class for converting an absl::Status to a gRPC-like status without
+// depending on gRPC. See the comment for `GrpcLike` above for the rationale.
+class AbslStatusConverter {
+ public:
+  static constexpr auto ToGrpcStatus(const absl::Status& status) {
+    return GrpcStatusConvertible{status};
+  }
+
+ private:
+  struct GrpcStatusConvertible {
+    const absl::Status& status;
+
+    template <typename T>
+      requires GrpcLike<T>
+    operator T() && {
+      using StatusCode = decltype(std::declval<T>().error_code());
+      return T(static_cast<StatusCode>(status.code()),
+               std::string(status.message()));
+    }
+  };
+};
+
+}  // namespace internal
 
 // Converts `status` to a readable string. The current absl `ToString` method is
 // not stable, which causes issues while golden testing. This function is
 // stable.
 std::string StableStatusToString(const absl::Status& status);
 
+// Converts an absl::Status to a gRPC-like status.
+inline auto AbslStatusToGrpcStatus(const absl::Status& status) {
+  return internal::AbslStatusConverter::ToGrpcStatus(status);
+}
+
+// Converts a gRPC-like status to an absl::Status.
+template <class T>
+  requires internal::GrpcLike<T>
+absl::Status GrpcStatusToAbslStatus(const T& status) {
+  return absl::Status(static_cast<absl::StatusCode>(status.error_code()),
+                      status.error_message());
+}
+
 // Protobuf and some other Google projects use Status classes that are isomorph,
 // but not equal to absl::Status (outside of google3).
 // This auxiliary function converts such Status classes to absl::Status.
 template <typename T>
 absl::Status ToAbslStatus(T status) {
-  return absl::Status(
-      static_cast<absl::StatusCode>(status.code()),
-      absl::string_view(status.message().data(), status.message().size()));
+  if constexpr (internal::GrpcLike<T>) {
+    return GrpcStatusToAbslStatus(status);
+  } else {
+    return absl::Status(
+        static_cast<absl::StatusCode>(status.code()),
+        absl::string_view(status.message().data(), status.message().size()));
+  }
 }
 
 // A proxy type and function for template type deduction for logging
@@ -74,10 +127,6 @@ StreamableStatusOrProxy<T> StreamableStatusOr(
     const absl::StatusOr<T>& status_or) {
   return StreamableStatusOrProxy<T>(status_or);
 }
-
-// Convert between gRPC and Abseil statuses.
-grpc::Status AbslStatusToGrpcStatus(const absl::Status& status);
-absl::Status GrpcStatusToAbslStatus(const grpc::Status& status);
 
 // StatusBuilder facilitates easier construction of Status objects with streamed
 // message building.
