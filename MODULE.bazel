@@ -17,11 +17,7 @@
 module(
     name = "gutil",
     version = "head",
-    # TODO: Remove upper bound once we support Bazel 9.x.
-    bazel_compatibility = [
-        ">=7.4.1",
-        "<9.0.0",
-    ],
+    bazel_compatibility = [">=7.4.1"],
 )
 
 bazel_dep(name = "abseil-cpp", version = "20260107.1")
