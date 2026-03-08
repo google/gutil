@@ -21,9 +21,7 @@ jobs:
     strategy:
       matrix:
         # TODO: Add back `latest` once we support Bazel 9.x.
-
         bazel_version: [7.x, 8.x]
-
 
     env:
       USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
