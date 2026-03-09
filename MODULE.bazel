@@ -16,7 +16,7 @@
 
 module(
     name = "gutil",
-    version = "head",
+    version = "20260309.0",
     bazel_compatibility = [">=7.4.1"],
 )
 
