@@ -19,6 +19,7 @@ namespace {
 using ::gutil::IsOkAndHolds;
 using ::gutil::StatusIs;
 using ::testing::Eq;
+using ::testing::HasSubstr;
 using ::testing::IsEmpty;
 using ::testing::Not;
 using ::testing::ResultOf;
@@ -235,6 +236,24 @@ TEST(SaveProtoToFile, SavesProtoToFileTruncatesFileOnOverwrite) {
   ASSERT_OK(gutil::ReadProtoFromFile(proto_save_path, &read_empty_proto));
   // Verify the file is truncated.
   EXPECT_THAT(read_empty_proto, EqualsProto(empty_proto));
+}
+
+TEST(GetOneOfFieldName, ReturnsFieldNameIfSet) {
+  TestMessageWithOneof message;
+  message.set_string_foo("hello");
+  EXPECT_THAT(GetOneOfFieldName(message, "foo"), IsOkAndHolds("string_foo"));
+}
+
+TEST(GetOneOfFieldName, ReturnsNotFoundIfOneofNotSet) {
+  TestMessageWithOneof message;
+  EXPECT_THAT(GetOneOfFieldName(message, "foo"),
+              StatusIs(absl::StatusCode::kNotFound, HasSubstr("is not set")));
+}
+
+TEST(GetOneOfFieldName, ReturnsNotFoundIfOneofDoesNotExist) {
+  TestMessageWithOneof message;
+  EXPECT_THAT(GetOneOfFieldName(message, "non_existent_oneof"),
+              StatusIs(absl::StatusCode::kNotFound, HasSubstr("not found")));
 }
 
 }  // namespace
