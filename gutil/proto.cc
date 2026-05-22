@@ -150,6 +150,10 @@ absl::StatusOr<std::string> GetOneOfFieldName(
     const google::protobuf::Message& message, const std::string& oneof_name) {
   const auto* oneof_descriptor =
       message.GetDescriptor()->FindOneofByName(oneof_name);
+  if (!oneof_descriptor) {
+    return gutil::NotFoundErrorBuilder()
+           << "Oneof field \"" << oneof_name << "\" not found";
+  }
   const auto* field = message.GetReflection()->GetOneofFieldDescriptor(
       message, oneof_descriptor);
   if (!field) {
