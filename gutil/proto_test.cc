@@ -110,6 +110,21 @@ TEST(ProtoDiff, ReturnsNonEmptyDiffForUnequalMessages) {
   EXPECT_THAT(ProtoDiff(message1, message2), IsOkAndHolds(Not(IsEmpty())));
 }
 
+TEST(ProtoDiff, ReturnsEmptyDiffForIgnoredDifferences) {
+  ASSERT_OK_AND_ASSIGN(auto message1, ParseTextProto<TestMessage>(R"pb(
+                         int_field: 42
+                         string_field: "hello!"
+                       )pb"));
+  ASSERT_OK_AND_ASSIGN(auto message2, ParseTextProto<TestMessage>(R"pb(
+                         int_field: 42
+                         string_field: "bye"
+                       )pb"));
+  google::protobuf::util::MessageDifferencer differ;
+  differ.IgnoreField(
+      TestMessage::descriptor()->FindFieldByName("string_field"));
+  EXPECT_THAT(ProtoDiff(message1, message2, differ), IsOkAndHolds(IsEmpty()));
+}
+
 TEST(ProtoEqual, ReturnsErrorForIncompatibleMessages) {
   ASSERT_OK_AND_ASSIGN(auto message1, ParseTextProto<TestMessage>(R"pb(
                          int_field: 42

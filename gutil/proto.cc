@@ -115,7 +115,9 @@ absl::StatusOr<std::string> ProtoDiff(
 
   std::string diff;
   differ.ReportDifferencesToString(&diff);
-  ProtoEqual(message1, message2, differ);
+  if (ProtoEqual(message1, message2, differ)) {
+    return "";
+  }
   return diff;
 }
 
