@@ -73,12 +73,11 @@ evaluates its argument before passing it to `__ASSIGN_OR_RETURN_VAL`.
 #### Examples
 
 Line | Code                               | Resolves to
----- | ---------------------------------- | -------------------------------
+---- | ---------------------------------- | ---------------------------------
 173  | `__ASSIGN_OR_RETURN_VAL(__LINE__)` | `__ASSIGN_OR_RETURN_RESULT_173`
 834  | `__ASSIGN_OR_RETURN_VAL(__LINE__)` | `__ASSIGN_OR_RETURN_RESULT_834`
-
--   | `__ASSIGN_OR_RETURN_VAL()` | `__ASSIGN_OR_RETURN_RESULT_`
--   | `__ASSIGN_OR_RETURN_VAL(HELLO)` | `__ASSIGN_OR_RETURN_RESULT_HELLO`
+-    | `__ASSIGN_OR_RETURN_VAL()`         | `__ASSIGN_OR_RETURN_RESULT_`
+-    | `__ASSIGN_OR_RETURN_VAL(HELLO)`    | `__ASSIGN_OR_RETURN_RESULT_HELLO`
 
 ### \_\_ASSIGN\_OR\_RETURN
 
